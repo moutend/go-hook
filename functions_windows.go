@@ -16,7 +16,7 @@ var (
 	procGetModuleHandleW, _  = modUser32.FindProc("GetModuleHandleW")
 )
 
-func CallNextHookEx(opt, code, wParam, lParam uint32) (lr uintptr) {
+func CallNextHookEx(opt, code, wParam, lParam uint64) (lr uintptr) {
 	lr, _, _ = procCallNextHookEx.Call(
 		uintptr(opt),
 		uintptr(code),
