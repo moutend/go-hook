@@ -22,3 +22,11 @@ type KBDLLHOOKSTRUCT struct {
 	Time        uint32
 	DWExtraInfo uint32
 }
+type MSLLHOOKSTRUCT struct {
+	POINT
+	MouseData   uint32
+	Flags       uint32
+	Time        uint32
+	DWExtraInfo uint32
+	uint32
+}
