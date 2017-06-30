@@ -15,3 +15,10 @@ type MSG struct {
 	Time    uint32
 	POINT
 }
+type KBDLLHOOKSTRUCT struct {
+	VKCode      uint32
+	ScanCode    uint32
+	Flags       uint32
+	Time        uint32
+	DWExtraInfo uint32
+}
