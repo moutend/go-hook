@@ -10,10 +10,11 @@ var (
 	modUser32, _   = syscall.LoadDLL("user32.dll")
 	modKernel32, _ = syscall.LoadDLL("kernel32.dll")
 
-	procCallNextHookEx, _    = modUser32.FindProc("CallNextHookEx")
-	procSetWindowsHookExW, _ = modUser32.FindProc("SetWindowsHookExW")
-	procGetMessageW, _       = modUser32.FindProc("GetMessageW")
-	procGetModuleHandleW, _  = modUser32.FindProc("GetModuleHandleW")
+	procCallNextHookEx, _      = modUser32.FindProc("CallNextHookEx")
+	procSetWindowsHookExW, _   = modUser32.FindProc("SetWindowsHookExW")
+	procGetMessageW, _         = modUser32.FindProc("GetMessageW")
+	procGetModuleHandleW, _    = modUser32.FindProc("GetModuleHandleW")
+	procUnhookWindowsHookEx, _ = modUser32.FindProc("UnhookWindowsHookEx")
 )
 
 func CallNextHookEx(opt, code, wParam, lParam uint64) (lr uintptr) {
@@ -25,13 +26,13 @@ func CallNextHookEx(opt, code, wParam, lParam uint64) (lr uintptr) {
 	return
 }
 
-func SetWindowsHookExW(hookId int32, fn uintptr, module uintptr, threadId uint32) (hHook uintptr) {
-	hHook, _, _ = procSetWindowsHookExW.Call(
+func SetWindowsHookExW(hookId int32, fn uintptr, module uintptr, threadId uint32) HHOOK {
+	hHook, _, _ := procSetWindowsHookExW.Call(
 		uintptr(hookId),
 		uintptr(fn),
 		uintptr(module),
 		uintptr(threadId))
-	return
+	return HHOOK(hHook)
 }
 
 func GetMessageW(message **MSG, hWindow uintptr, wMsgFilterMin, wMsgFilterMax uint32) bool {
@@ -51,4 +52,13 @@ func GetModuleHandleW(name uintptr) (hModule uintptr) {
 	hModule, _, _ = procSetWindowsHookExW.Call(
 		uintptr(name))
 	return
+}
+
+func UnhookWindowsHookEx(hHook HHOOK) bool {
+	r, _, _ := procUnhookWindowsHookEx.Call(uintptr(hHook))
+	if r == 0 {
+		return false
+	} else {
+		return true
+	}
 }
