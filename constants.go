@@ -1,4 +1,4 @@
-package winhook
+package hook
 
 const (
 	WH_MSGFILTER       = -1

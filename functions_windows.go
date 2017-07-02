@@ -1,5 +1,5 @@
 // +build windows
-package winhook
+package hook
 
 import (
 	"syscall"
@@ -15,6 +15,8 @@ var (
 	procGetMessageW, _         = modUser32.FindProc("GetMessageW")
 	procGetModuleHandleW, _    = modUser32.FindProc("GetModuleHandleW")
 	procUnhookWindowsHookEx, _ = modUser32.FindProc("UnhookWindowsHookEx")
+	procPostThreadMessageW, _  = modUser32.FindProc("PostThreadMessageW")
+	procPostQuitMessage, _     = modUser32.FindProc("PostQuitMessage")
 )
 
 func CallNextHookEx(opt, code, wParam, lParam uint64) (lr uintptr) {
@@ -61,4 +63,21 @@ func UnhookWindowsHookEx(hHook HHOOK) bool {
 	} else {
 		return true
 	}
+}
+
+func PostThreadMessageW(threadId, message, wParam, lParam uint64) bool {
+	r, _, _ := procPostThreadMessageW.Call(
+		uintptr(threadId),
+		uintptr(message),
+		uintptr(wParam),
+		uintptr(lParam))
+	if r == 0 {
+		return false
+	} else {
+		return true
+	}
+}
+
+func PostQuitMessage(code uint64) {
+	procPostQuitMessage.Call(uintptr(code))
 }
