@@ -1,5 +1,3 @@
-// +build windows
-
 // Package keyboard provides low level global hook for keyboard input.
 package keyboard
 

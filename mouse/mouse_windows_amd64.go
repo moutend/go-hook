@@ -1,5 +1,3 @@
-// +build windows
-
 // Package mouse provides low level global hook for mouse input.
 package mouse
 
