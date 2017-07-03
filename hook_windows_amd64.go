@@ -1,5 +1,3 @@
-// +build windows
-
 // Package hook provides low level hook.
 package hook
 
