@@ -61,5 +61,5 @@ func notify(ctx context.Context, ch chan<- KBDLLHOOKSTRUCT) {
 
 // Notify causes package keyboard to relay all keyboard events to ch.
 func Notify(ctx context.Context, ch chan<- KBDLLHOOKSTRUCT) {
-	go notify(ctx, ch)
+	notify(ctx, ch)
 }

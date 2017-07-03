@@ -61,5 +61,5 @@ func notify(ctx context.Context, ch chan<- MSLLHOOKSTRUCT) {
 
 // Notify causes package mouse to relay all keyboard events to ch.
 func Notify(ctx context.Context, ch chan<- MSLLHOOKSTRUCT) {
-	go notify(ctx, ch)
+	notify(ctx, ch)
 }
