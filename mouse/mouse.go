@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/moutend/hook"
+	"github.com/moutend/go-hook"
 )
 
 // MSLLHOOKSTRUCT corresponds to MSLLHOOKSTRUCT structure.

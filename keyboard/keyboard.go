@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/moutend/hook"
+	"github.com/moutend/go-hook"
 )
 
 // KBDLLHOOKSTRUCT corresponds to KBDLLHOOKSTRUCT structure.
