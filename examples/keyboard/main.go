@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sync"
 
 	"github.com/moutend/go-hook/keyboard"
 )
@@ -13,15 +14,19 @@ import (
 func main() {
 	fmt.Println("start capturing keyboard input")
 
-	isInterrupted := false
-	ctx, cancel := context.WithCancel(context.Background())
-
-	keyboardChan := make(chan keyboard.KBDLLHOOKSTRUCT, 1)
-	keyboard.Notify(ctx, keyboardChan)
+	var isInterrupted bool
+	var wg sync.WaitGroup
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt)
+	ctx, cancel := context.WithCancel(context.Background())
+	keyboardChan := make(chan keyboard.KBDLLHOOKSTRUCT, 1)
 
+	go func() {
+		wg.Add(1)
+		keyboard.Notify(ctx, keyboardChan)
+		wg.Done()
+	}()
 	for {
 		if isInterrupted {
 			cancel()
@@ -34,4 +39,6 @@ func main() {
 			fmt.Printf("%+v\n", k)
 		}
 	}
+	wg.Wait()
+	fmt.Println("done")
 }
