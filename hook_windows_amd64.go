@@ -1,4 +1,4 @@
-// Package hook provides low level hook.
+// Package hook provides low level keyboard and mouse hook for Windows.
 package hook
 
 import (

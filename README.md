@@ -4,7 +4,7 @@
 
 [license]: https://github.com/moutend/go-wca/blob/master/LICENSE
 
-Package `go-hook` is the package for hooking low-level keyboard or mouse input on Windows.
+`go-hook`provides low level keyboard and mouse hook for Windows.
 
 Note: The package is currently tested on Windows 10 64bit edition. Other versions of Windows are not supported yet.
 
