@@ -30,30 +30,31 @@ func notify(ctx context.Context, ch chan<- MSLLHOOKSTRUCT) {
 	}
 
 	const WH_MOUSE_LL = 14
+	var lResult hook.HHOOK
 	hookProcedure := func(code, wParam, lParam uint64) uintptr {
 		m := *(*MSLLHOOKSTRUCT)(unsafe.Pointer(uintptr(lParam)))
 		ch <- m
 		return uintptr(hook.CallNextHookEx(0, code, wParam, lParam))
 	}
 
-	lResult := hook.SetWindowsHookExW(
-		WH_MOUSE_LL,
-		hook.HOOKPROC(syscall.NewCallback(hookProcedure)),
-		0,
-		0)
-	if lResult == 0 {
-		panic("failed to set hook procedure")
-	}
 	go func() {
-		<-ctx.Done()
-		if !hook.UnhookWindowsHookEx(lResult) {
-			panic("failed to unhook")
+		lResult = hook.SetWindowsHookExW(
+			WH_MOUSE_LL,
+			hook.HOOKPROC(syscall.NewCallback(hookProcedure)),
+			0,
+			0)
+		if lResult == 0 {
+			panic("failed to set hook procedure")
 		}
+		var msg *hook.MSG
+		hook.GetMessageW(&msg, 0, 0, 0)
+		panic("hook finished")
 	}()
 
-	var msg *hook.MSG
-	hook.GetMessageW(&msg, 0, 0, 0)
-
+	<-ctx.Done()
+	if !hook.UnhookWindowsHookEx(lResult) {
+		panic("failed to unhook")
+	}
 	return
 }
 
