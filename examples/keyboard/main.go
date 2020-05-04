@@ -1,44 +1,56 @@
 // +build windows
+
 package main
 
 import (
-	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
-	"sync"
+	"time"
 
-	"github.com/moutend/go-hook/keyboard"
+	"github.com/moutend/go-hook/pkg/keyboard"
+	"github.com/moutend/go-hook/pkg/types"
 )
 
 func main() {
-	fmt.Println("start capturing keyboard input")
+	log.SetFlags(0)
+	log.SetPrefix("error: ")
 
-	var isInterrupted bool
-	var wg sync.WaitGroup
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	// Buffer size is depends on your need. The 100 is placeholder value.
+	keyboardChan := make(chan types.KeyboardEvent, 100)
+
+	if err := keyboard.Install(nil, keyboardChan); err != nil {
+		return err
+	}
+
+	defer keyboard.Uninstall()
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt)
-	ctx, cancel := context.WithCancel(context.Background())
-	keyboardChan := make(chan keyboard.KBDLLHOOKSTRUCT, 1)
 
-	go func() {
-		wg.Add(1)
-		keyboard.Notify(ctx, keyboardChan)
-		wg.Done()
-	}()
+	fmt.Println("start capturing keyboard input")
+
 	for {
-		if isInterrupted {
-			cancel()
-			break
-		}
 		select {
+		case <-time.After(5 * time.Minute):
+			fmt.Println("Received timeout signal")
+			return nil
 		case <-signalChan:
-			isInterrupted = true
+			fmt.Println("Received shutdown signal")
+			return nil
 		case k := <-keyboardChan:
-			fmt.Printf("%+v\n", k)
+			fmt.Printf("Received %v %v\n", k.Message, k.VKCode)
+			continue
 		}
 	}
-	wg.Wait()
-	fmt.Println("done")
+
+	// not reached
+	return nil
 }
