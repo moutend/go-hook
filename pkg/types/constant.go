@@ -8,18 +8,37 @@ package types
 type Hook uintptr
 
 const (
-	WH_KEYBOARD_LL Hook = 13
-	WH_MOUSE_LL    Hook = 14
+	WH_JOURNALRECORD   Hook = 0
+	WH_JOURNALPLAYBACK Hook = 1
+	WH_KEYBOARD        Hook = 2
+	WH_GETMESSAGE      Hook = 3
+	WH_CALLWNDPROC     Hook = 4
+	WH_CBT             Hook = 5
+	WH_SYSMSGFILTER    Hook = 6
+	WH_MOUSE           Hook = 7
+	WH_DEBUG           Hook = 9
+	WH_SHELL           Hook = 10
+	WH_FOREGROUNDIDLE  Hook = 11
+	WH_CALLWNDPROCRET  Hook = 12
+	WH_KEYBOARD_LL     Hook = 13
+	WH_MOUSE_LL        Hook = 14
 )
 
 // Message represents Windows events.
 type Message uintptr
 
 const (
-	WM_KEYDOWN    Message = 0x0100
-	WM_KEYUP      Message = 0x0101
-	WM_SYSKEYDOWN Message = 0x0104
-	WM_SYSKEYUP   Message = 0x0105
+	WM_LBUTTONDOWN Message = 0x0201
+	WM_LBUTTONUP   Message = 0x0202
+	WM_MOUSEMOVE   Message = 0x0200
+	WM_MOUSEWHEEL  Message = 0x020A
+	WM_MOUSEHWHEEL Message = 0x020E
+	WM_RBUTTONDOWN Message = 0x0204
+	WM_RBUTTONUP   Message = 0x0205
+	WM_KEYDOWN     Message = 0x0100
+	WM_KEYUP       Message = 0x0101
+	WM_SYSKEYDOWN  Message = 0x0104
+	WM_SYSKEYUP    Message = 0x0105
 )
 
 // VKCode represents Microsoft defined virtual key codes.

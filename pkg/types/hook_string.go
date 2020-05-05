@@ -8,18 +8,40 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
+	_ = x[WH_JOURNALRECORD-0]
+	_ = x[WH_JOURNALPLAYBACK-1]
+	_ = x[WH_KEYBOARD-2]
+	_ = x[WH_GETMESSAGE-3]
+	_ = x[WH_CALLWNDPROC-4]
+	_ = x[WH_CBT-5]
+	_ = x[WH_SYSMSGFILTER-6]
+	_ = x[WH_MOUSE-7]
+	_ = x[WH_DEBUG-9]
+	_ = x[WH_SHELL-10]
+	_ = x[WH_FOREGROUNDIDLE-11]
+	_ = x[WH_CALLWNDPROCRET-12]
 	_ = x[WH_KEYBOARD_LL-13]
 	_ = x[WH_MOUSE_LL-14]
 }
 
-const _Hook_name = "WH_KEYBOARD_LLWH_MOUSE_LL"
+const (
+	_Hook_name_0 = "WH_JOURNALRECORDWH_JOURNALPLAYBACKWH_KEYBOARDWH_GETMESSAGEWH_CALLWNDPROCWH_CBTWH_SYSMSGFILTERWH_MOUSE"
+	_Hook_name_1 = "WH_DEBUGWH_SHELLWH_FOREGROUNDIDLEWH_CALLWNDPROCRETWH_KEYBOARD_LLWH_MOUSE_LL"
+)
 
-var _Hook_index = [...]uint8{0, 14, 25}
+var (
+	_Hook_index_0 = [...]uint8{0, 16, 34, 45, 58, 72, 78, 93, 101}
+	_Hook_index_1 = [...]uint8{0, 8, 16, 33, 50, 64, 75}
+)
 
 func (i Hook) String() string {
-	i -= 13
-	if i >= Hook(len(_Hook_index)-1) {
-		return "Hook(" + strconv.FormatInt(int64(i+13), 10) + ")"
+	switch {
+	case i <= 7:
+		return _Hook_name_0[_Hook_index_0[i]:_Hook_index_0[i+1]]
+	case 9 <= i && i <= 14:
+		i -= 9
+		return _Hook_name_1[_Hook_index_1[i]:_Hook_index_1[i+1]]
+	default:
+		return "Hook(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _Hook_name[_Hook_index[i]:_Hook_index[i+1]]
 }
