@@ -1,5 +1,3 @@
-// +build windows
-
 package win32
 
 import (
@@ -12,6 +10,9 @@ import (
 var (
 	modUser32, _ = syscall.LoadDLL("user32.dll")
 
+	procGetKeyState, _         = modUser32.FindProc("GetKeyState")
+	procToUnicodeEx, _         = modUser32.FindProc("ToUnicodeEx")
+	procGetKeyboardLayout, _   = modUser32.FindProc("GetKeyboardLayout")
 	procCallNextHookEx, _      = modUser32.FindProc("CallNextHookEx")
 	procSetWindowsHookExW, _   = modUser32.FindProc("SetWindowsHookExW")
 	procGetMessageW, _         = modUser32.FindProc("GetMessageW")
@@ -20,6 +21,43 @@ var (
 	procGetModuleHandleW, _    = modUser32.FindProc("GetModuleHandleW")
 	procUnhookWindowsHookEx, _ = modUser32.FindProc("UnhookWindowsHookEx")
 )
+
+func GetKeyState(nVirtKey int) int {
+	r, _, _ := procGetKeyState.Call(uintptr(nVirtKey))
+
+	return int(r)
+}
+
+func ToUnicodeEx(wVirtKey, wScanCode int32, dwhkl uintptr) string {
+	pwszBuff := make([]uint16, 5)
+	lpKeyState := [256]byte{}
+
+	for i, _ := range lpKeyState {
+		lpKeyState[i] = byte(GetKeyState(i))
+	}
+
+	r, _, _ := procToUnicodeEx.Call(
+		uintptr(wVirtKey),
+		uintptr(wScanCode),
+		uintptr(unsafe.Pointer(&lpKeyState[0])),
+		uintptr(unsafe.Pointer(&pwszBuff[0])),
+		uintptr(len(pwszBuff)),
+		0x4,
+		dwhkl,
+	)
+
+	if r == 0 {
+		return ""
+	}
+
+	return syscall.UTF16ToString(pwszBuff)
+}
+
+func GetKeyboardLayout(idThread uintptr) uintptr {
+	r, _, _ := procGetKeyboardLayout.Call(idThread)
+
+	return r
+}
 
 func CallNextHookEx(hhk uintptr, code int32, wParam, lParam uintptr) uintptr {
 	r, _, _ := procCallNextHookEx.Call(hhk, uintptr(code), wParam, lParam)
